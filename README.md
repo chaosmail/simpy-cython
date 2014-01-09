@@ -22,8 +22,14 @@ import simpyx as simpy
 
 For running the benchmarks there should also be the pure python simpy-3.0.2 installed.
 
-[Bank Renege](https://simpy.readthedocs.org/en/latest/examples/bank_renege.html)
+[Bank Renege](https://simpy.readthedocs.org/en/3.0.2/examples/bank_renege.html)
 ```
 ('simpy: ', 0.004045009613037109)
 ('simpyx:', 0.001714944839477539)
+```
+
+[Movie Renege](https://simpy.readthedocs.org/en/3.0.2/examples/movie_renege.html)
+```
+('simpy: ', 0.009849071502685547)
+('simpyx:', 0.007219076156616211)
 ```

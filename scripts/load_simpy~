@@ -5,11 +5,11 @@ USER=simpy
 LIB=simpy
 VERSION=3.0.2
 NAME=$LIB-$VERSION
-URL=https://bitbucket.org/simpy/$LIB/get/$VERSION.tar.gz
+URL=https://bitbucket.org/$USER/$LIB/get/$VERSION.tar.gz
 
 wget -O $NAME.tar.gz $URL
 tar xvfz $NAME.tar.gz
-DIR=$(tar -tf simpy-3.0.2.tar.gz | head -1 | cut -d/ -f1)
+DIR=$(tar -tf $NAME.tar.gz | head -1 | cut -d/ -f1)
 rm -f $NAME.tar.gz
-mv $DIR/$LIB simpyx/$LIB
-rm -f $DIR
+mv -f $DIR/$LIB/* simpyx/
+rm -R -f $DIR

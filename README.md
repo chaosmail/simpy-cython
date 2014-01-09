@@ -20,6 +20,8 @@ import simpyx as simpy
 
 ## Reults of Simple Benchmark
 
+For running the benchmarks there should also be the pure python simpy-3.0.2 installed.
+
 [Bank Renege](https://simpy.readthedocs.org/en/latest/examples/bank_renege.html)
 ```
 ('simpy: ', 0.004045009613037109)

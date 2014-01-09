@@ -33,3 +33,15 @@ For running the benchmarks there should also be the pure python simpy-3.0.2 inst
 ('simpy: ', 0.009849071502685547)
 ('simpyx:', 0.007219076156616211)
 ```
+
+[Machine Shop](https://simpy.readthedocs.org/en/3.0.2/examples/machine_shop.html)
+```
+('simpy: ', 0.2819509506225586)
+('simpyx:', 0.24776101112365723)
+```
+
+[Gas Station Refueling](https://simpy.readthedocs.org/en/3.0.2/examples/gas_station_refuel.html)
+```
+('simpy: ', 0.0065860748291015625)
+('simpyx:', 0.004212856292724609)
+```

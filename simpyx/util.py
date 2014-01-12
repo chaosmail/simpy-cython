@@ -15,7 +15,7 @@ def start_delayed(env, generator, delay):
     simulation time. This helper allows you to start a process after a delay of
     *delay* simulation time units::
 
-        >>> from simpyx import Environment
+        >>> from simpy import Environment
         >>> from simpyx.util import start_delayed
         >>> def my_process(env, x):
         ...     print('%s, %s' % (env.now, x))

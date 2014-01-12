@@ -18,7 +18,12 @@ Scenario:
 
 """
 import timeit
+import sys, os.path
 
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
+def avg(l):
+    return sum(l) / float(len(l))
 
 setup = """
 
@@ -96,5 +101,5 @@ env.process(car_generator(env, gas_station, fuel_pump))
 setup_simpy = "import simpy" + setup
 setup_simpyx = "import simpyx as simpy" + setup
 
-print("simpy: ", min(timeit.Timer('env._now=0; env.run(until=SIM_TIME)', setup=setup_simpy).repeat(10, 1000)))
-print("simpyx:", min(timeit.Timer('env._now=0; env.run(until=SIM_TIME)', setup=setup_simpyx).repeat(10, 1000)))
+print "simpy: ", avg(timeit.Timer('env._now=0; env.run(until=SIM_TIME)', setup=setup_simpy).repeat(100, 1000))
+print "simpyx:", avg(timeit.Timer('env._now=0; env.run(until=SIM_TIME)', setup=setup_simpyx).repeat(100, 1000))

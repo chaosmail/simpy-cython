@@ -6,7 +6,7 @@ import re
 
 import pytest
 
-from simpyx import Interrupt
+from simpy import Interrupt
 from simpyx.util import start_delayed, subscribe_at
 
 

@@ -11,16 +11,19 @@ Scenario:
   program bank08.py from TheBank tutorial of SimPy 2. (KGM)
 
 """
-import timeit
+
+import cProfile, pstats, StringIO
 import sys, os.path
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-def avg(l):
-    return sum(l) / float(len(l))
+pr = cProfile.Profile()
+pr.enable()
 
-setup = """
+import simpyx as simpy
 import random
+
+print "Profiling", simpy.__file__
 
 RANDOM_SEED = 42
 NEW_CUSTOMERS = 5  # Total number of customers
@@ -30,7 +33,7 @@ MAX_PATIENCE = 3  # Max. customer patience
 
 
 def source(env, number, interval, counter):
-    
+
     for i in range(number):
         c = customer(env, 'Customer%02d' % i, counter, time_in_bank=12.0)
         env.process(c)
@@ -70,10 +73,14 @@ random.seed(RANDOM_SEED)
 env = simpy.core.Environment()
 counter = simpy.resources.resource.Resource(env, capacity=1)
 env.process(source(env, NEW_CUSTOMERS, INTERVAL_CUSTOMERS, counter))
-"""
 
-setup_simpy = "import simpy" + setup
-setup_simpyx = "import simpyx as simpy" + setup
+# Run the simulation and profile it
+env.run()
 
-print "simpy: ", avg(timeit.Timer('env.run()', setup=setup_simpy).repeat(100, 1000))
-print "simpyx:", avg(timeit.Timer('env.run()', setup=setup_simpyx).repeat(100, 1000))
+pr.disable()
+s = StringIO.StringIO()
+sortby = 'tottime'
+ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+ps.print_stats()
+print s.getvalue()
+

@@ -1,6 +1,8 @@
 from setuptools import setup
 from Cython.Build import cythonize
 
+ext_options = {"compiler_directives": {"profile": True}, "annotate": True}
+
 setup(name='simpyx',
       version='0.0.1',
       description='Simpy fork, that is compiled with cython',
@@ -8,6 +10,6 @@ setup(name='simpyx',
       author='Christoph Koerner',
       author_email='office@chaosmail.at',
       license='MIT',
-      packages=['simpyx'],
-      ext_modules = cythonize(["simpyx/*.py","simpyx/resources/*.py"]),
+      requires=['cython'],
+      ext_modules=cythonize(["simpyx/*.py"], [], 4, **ext_options),
       zip_safe=False)

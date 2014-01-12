@@ -11,5 +11,5 @@ setup(name='simpyx',
       author_email='office@chaosmail.at',
       license='MIT',
       requires=['cython'],
-      ext_modules=cythonize(["simpyx/*.py"], [], 4, **ext_options),
+      ext_modules=cythonize(["simpyx/*.py"], nthreads=4, **ext_options),
       zip_safe=False)

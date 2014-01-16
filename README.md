@@ -80,3 +80,30 @@ Running simpy3x[None].condition_events(10000) ...
 Running simpy3x[None].condition_wait(10000) ...
 ... 0.77s
 ```
+
+## Optimizations
+
+Here is a profile of the [Machine Shop](https://simpy.readthedocs.org/en/3.0.2/examples/machine_shop.html) Demo, which shows the functions, that should be optimized.
+```
+ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    36195    0.076    0.000    0.249    0.000 demos/machine-shop-profile.py:63(working)
+    41449    0.069    0.000    0.403    0.000 core.py:194(step)
+    32785    0.054    0.000    0.075    0.000 /usr/lib/python2.7/random.py:382(normalvariate)
+    38494    0.041    0.000    0.317    0.000 events.py:276(_resume)
+    36910    0.029    0.000    0.051    0.000 events.py:169(__init__)
+    41466    0.027    0.000    0.027    0.000 core.py:181(schedule)
+        1    0.016    0.016    0.419    0.419 core.py:87(run)
+    32785    0.015    0.000    0.090    0.000 demos/machine-shop-profile.py:44(time_per_part)
+    46489    0.014    0.000    0.014    0.000 {math.log}
+     3855    0.012    0.000    0.020    0.000 resource.py:209(_do_put)
+    91564    0.008    0.000    0.008    0.000 {method 'random' of '_random.Random' objects}
+     1584    0.005    0.000    0.005    0.000 resource.py:108(append)
+     1584    0.004    0.000    0.020    0.000 base.py:32(__init__)
+     1375    0.004    0.000    0.007    0.000 events.py:252(interrupt)
+     1579    0.004    0.000    0.017    0.000 resource.py:47(__exit__)
+     1579    0.004    0.000    0.009    0.000 base.py:80(__init__)
+    37325    0.004    0.000    0.004    0.000 core.py:155(now)
+     1579    0.004    0.000    0.015    0.000 base.py:171(_trigger_put)
+     1584    0.003    0.000    0.023    0.000 resource.py:80(__init__)
+     3855    0.003    0.000    0.006    0.000 resource.py:162(_do_put)
+```

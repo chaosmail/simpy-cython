@@ -11,16 +11,16 @@ Scenario:
   program bank08.py from TheBank tutorial of SimPy 2. (KGM)
 
 """
-
-import cProfile, pstats, StringIO
+import timeit
 import sys, os.path
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-import simpyx as simpy
-import random
+def avg(l):
+    return sum(l) / float(len(l))
 
-print "Running", simpy.__file__
+setup = """
+import random
 
 RANDOM_SEED = 42
 NEW_CUSTOMERS = 5  # Total number of customers
@@ -30,7 +30,7 @@ MAX_PATIENCE = 3  # Max. customer patience
 
 
 def source(env, number, interval, counter):
-
+    
     for i in range(number):
         c = customer(env, 'Customer%02d' % i, counter, time_in_bank=12.0)
         env.process(c)
@@ -41,7 +41,7 @@ def source(env, number, interval, counter):
 def customer(env, name, counter, time_in_bank):
 
     arrive = env.now
-    print('%7.4f %s: Here I am' % (arrive, name))
+    # print('%7.4f %s: Here I am' % (arrive, name))
 
     with counter.request() as req:
         patience = random.uniform(MIN_PATIENCE, MAX_PATIENCE)
@@ -52,24 +52,28 @@ def customer(env, name, counter, time_in_bank):
 
         if req in results:
             # We got to the counter
-            print('%7.4f %s: Waited %6.3f' % (env.now, name, wait))
+            # print('%7.4f %s: Waited %6.3f' % (env.now, name, wait))
 
             tib = random.expovariate(1.0 / time_in_bank)
             yield env.timeout(tib)
             # print('%7.4f %s: Finished' % (env.now, name))
 
-        else:
+        # else:
             # We reneged
-            print('%7.4f %s: RENEGED after %6.3f' % (env.now, name, wait))
+            # print('%7.4f %s: RENEGED after %6.3f' % (env.now, name, wait))
 
 
 # Setup and start the simulation
-print('Bank renege')
+# print('Bank renege')
 random.seed(RANDOM_SEED)
 
 env = simpy.core.Environment()
 counter = simpy.resources.resource.Resource(env, capacity=1)
 env.process(source(env, NEW_CUSTOMERS, INTERVAL_CUSTOMERS, counter))
+"""
 
-# Run the simulation and profile it
-env.run()
+setup_simpy = "import simpy" + setup
+setup_simpyx = "import simpyx as simpy" + setup
+
+print "simpy: ", avg(timeit.Timer('env.run()', setup=setup_simpy).repeat(100, 1000))
+print "simpyx:", avg(timeit.Timer('env.run()', setup=setup_simpyx).repeat(100, 1000))

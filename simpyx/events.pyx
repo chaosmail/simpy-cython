@@ -31,7 +31,6 @@ from simpyx._compat import PY2
 if PY2:
     import sys
 
-
 PENDING = object()
 """Unique object to identify pending values of events."""
 
@@ -41,7 +40,7 @@ NORMAL = 1
 """Default priority used by events."""
 
 
-class Event(object):
+cdef class Event(object):
     """Base class for all events.
 
     Every event is bound to an environment *env* (see
@@ -59,6 +58,13 @@ class Event(object):
     of them.
 
     """
+
+    cdef public object env
+    cdef public list callbacks
+    cdef public object _value
+    cdef public int ok
+    cdef public object defused
+
     def __init__(self, env):
         self.env = env
         """The :class:`~simpy.core.Environment` the event lives in."""
@@ -101,7 +107,7 @@ class Event(object):
             raise AttributeError('Value of %s is not yet available' % self)
         return self._value
 
-    def trigger(self, event):
+    def trigger(self, Event event):
         """Triggers the event with the state and value of the provided *event*.
 
         This method can be used directly as a callback function.
@@ -157,7 +163,7 @@ class Event(object):
         return Condition(self.env, Condition.any_events, [self, other])
 
 
-class Timeout(Event):
+cdef class Timeout(Event):
     """An :class:`Event` that is scheduled with a certain *delay* after its
     creation.
 
@@ -166,7 +172,10 @@ class Timeout(Event):
     has thus (in contrast to :class:`Event`) no *success()* or *fail()* method.
 
     """
-    def __init__(self, env, delay, value=None):
+
+    cdef public float _delay
+
+    def __init__(self, env, float delay, value=None):
         if delay < 0:
             raise ValueError('Negative delay %s' % delay)
         # NOTE: The following initialization code is inlined from
@@ -185,7 +194,7 @@ class Timeout(Event):
                              (', value=%s' % self._value))
 
 
-class Initialize(Event):
+cdef class Initialize(Event):
     """Initializes a process. Only used internally by :class:`Process`."""
     def __init__(self, env, process):
         # NOTE: The following initialization code is inlined from
@@ -201,7 +210,7 @@ class Initialize(Event):
         env.schedule(self, URGENT)
 
 
-class Process(Event):
+cdef class Process(Event):
     """A *Process* is a wrapper for the process *generator* (that is returned
     by a *process function*) during its execution.
 
@@ -215,6 +224,10 @@ class Process(Event):
     :meth:`simpy.core.Environment.process()`.
 
     """
+
+    cdef public object _generator
+    cdef public object _target
+
     def __init__(self, env, generator):
         if not isgenerator(generator):
             raise ValueError('%s is not a generator.' % generator)
@@ -273,7 +286,7 @@ class Process(Event):
         event.callbacks.append(self._resume)
         self.env.schedule(event, URGENT)
 
-    def _resume(self, event):
+    def _resume(self, Event event):
         """Resume the execution of the process.
 
         Send the result of the event the process was waiting for into the
@@ -351,7 +364,7 @@ class Process(Event):
         self.env._active_proc = None
 
 
-class Condition(Event):
+cdef class Condition(Event):
     """A *Condition* :class:`Event` groups several *events* and is triggered if
     a given condition (implemented by the *evaluate* function) becomes true.
 
@@ -371,6 +384,12 @@ class Condition(Event):
     Conditions events can be nested.
 
     """
+
+    cdef public object _evaluate
+    cdef public object _interim_values
+    cdef public list _events
+    cdef public list _sub_conditions
+
     def __init__(self, env, evaluate, events):
         super(Condition, self).__init__(env)
         self._evaluate = evaluate
@@ -406,12 +425,12 @@ class Condition(Event):
 
         return values
 
-    def _collect_values(self, event):
+    def _collect_values(self, Event event):
         """Update the final value of this condition."""
         if event.ok:
             self._value.update(self._get_values())
 
-    def _add_event(self, event):
+    def _add_event(self, Event event):
         """Add another *event* to the condition.
 
         Raise a :exc:`ValueError` if *event* belongs to a different
@@ -435,7 +454,7 @@ class Condition(Event):
 
         return self
 
-    def _check(self, event):
+    def _check(self, Event event):
         """Check if the condition was already met and schedule the *event* if
         so."""
         self._interim_values[event] = event._value
@@ -451,14 +470,14 @@ class Condition(Event):
                 # populate this dictionary once this condition gets processed.
                 self.succeed({})
 
-    def __iand__(self, other):
+    def __iand__(self, Event other):
         if self._evaluate is not Condition.all_events:
             # Use self.__and__
             return NotImplemented
 
         return self._add_event(other)
 
-    def __ior__(self, other):
+    def __ior__(self, Event other):
         if self._evaluate is not Condition.any_events:
             # Use self.__or__
             return NotImplemented
@@ -478,13 +497,13 @@ class Condition(Event):
         return len(values) > 0 or len(events) == 0
 
 
-class AllOf(Condition):
+cdef class AllOf(Condition):
     """A :class:`Condition` event that waits for all *events*."""
     def __init__(self, env, events):
         super(AllOf, self).__init__(env, Condition.all_events, events)
 
 
-class AnyOf(Condition):
+cdef class AnyOf(Condition):
     """A :class:`Condition` event that waits until the first of *events* is
     triggered."""
     def __init__(self, env, events):
@@ -518,7 +537,7 @@ class Interrupt(Exception):
         return self.args[0]
 
 
-def _describe_frame(frame):
+cdef _describe_frame(frame):
     """Print filename, line number and function name of a stack frame."""
     filename, name = frame.f_code.co_filename, frame.f_code.co_name
     lineno = frame.f_lineno

@@ -1,5 +1,7 @@
 # Simpy 3.0.2 Fork :: Compiled with Cython
 
+Watch out! This is a test and not thought for production usage!
+
 ## Dependencies for compiling with cython
 
 * Install Cython
@@ -24,26 +26,26 @@ For running the benchmarks there should also be the pure python simpy-3.0.2 inst
 
 [Bank Renege](https://simpy.readthedocs.org/en/3.0.2/examples/bank_renege.html)
 ```
-simpy:  0.00413833856583
-simpyx: 0.001937520504
+simpy:  0.00406591653824
+simpyx: 0.00158740997314
 ```
 
 [Movie Renege](https://simpy.readthedocs.org/en/3.0.2/examples/movie_renege.html)
 ```
-simpy:  0.0102033233643
-simpyx: 0.00770617961884
+simpy:  0.0103244996071
+simpyx: 0.0070446395874
 ```
 
 [Machine Shop](https://simpy.readthedocs.org/en/3.0.2/examples/machine_shop.html)
 ```
-simpy:  0.292090582848
-simpyx: 0.264786791801
+simpy:  0.290431642532
+simpyx: 0.230748915672
 ```
 
 [Gas Station Refueling](https://simpy.readthedocs.org/en/3.0.2/examples/gas_station_refuel.html)
 ```
-simpy:  0.00685012340546
-simpyx: 0.0042598772049
+simpy:  0.00672302961349
+simpyx: 0.00421807289124
 ```
 
 ## Results of simpy-benchmark
@@ -66,19 +68,19 @@ Running simpy3[3.0.2].condition_events(10000) ...
 Running simpy3[3.0.2].condition_wait(10000) ...
 ... 0.92s
 
-Running benchmarks for rev. None ...
 Running simpy3x[None].simple_sim(316, 316) ...
-... 0.27s
+... 0.25s
 Running simpy3x[None].simple_sim(10, 10000) ...
-... 0.23s
+... 0.21s
 Running simpy3x[None].simple_sim(10000, 10) ...
-... 0.34s
+... 0.33s
 Running simpy3x[None].wait_for_proc(100, 100) ...
-... 0.16s
+... 0.13s
 Running simpy3x[None].condition_events(10000) ...
-... 0.41s
+... 0.33s
 Running simpy3x[None].condition_wait(10000) ...
-... 0.77s
+... 0.66s
+
 ```
 
 ## Optimizations

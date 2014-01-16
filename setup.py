@@ -1,8 +1,7 @@
 from setuptools import setup
 from Cython.Build import cythonize
 
-#ext_options = {"compiler_directives": {"profile": True}, "annotate": True}
-ext_options = {}
+ext_options = {"compiler_directives": {"profile": True}, "annotate": True}
 
 setup(name='simpyx',
       version='0.0.1',
@@ -12,5 +11,5 @@ setup(name='simpyx',
       author_email='office@chaosmail.at',
       license='MIT',
       requires=['cython'],
-      ext_modules=cythonize(["simpyx/*.py", "simpyx/resources/*.py"], **ext_options),
+      ext_modules=cythonize(["simpyx/*.py", "simpyx/*.pyx", "simpyx/resources/*.py"], **ext_options),
       zip_safe=False)

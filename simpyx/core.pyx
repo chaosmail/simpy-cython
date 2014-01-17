@@ -84,7 +84,7 @@ class BaseEnvironment(object):
         """Process the next event."""
         raise NotImplementedError(self)
 
-    def run(self, until=None):
+    def run(self, object until=None):
         """Executes :meth:`step()` until the given criterion *until* is met.
 
         - If it is ``None`` (which is the default) this method will return if
